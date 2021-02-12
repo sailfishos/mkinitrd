@@ -667,7 +667,7 @@ do_live_from_base_loop() {
 
     # set up new /dev/root symlink
     rm -f /dev/root
-    ln -s /dev/mapper/live-rw /dev/root
+    ln -fs /dev/mapper/live-rw /dev/root
 
     mount -n  /dev/mapper/live-rw /sysroot
     # here you can modify the rw ext3 fs for testing if you don't want to
