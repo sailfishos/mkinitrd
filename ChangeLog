@@ -1,0 +1,305 @@
+2007-11-13  Peter Jones  <pjones@redhat.com>
+
+	* nash/hotplug.c (handle_single_uevent):
+	- fix "done" initialization (#378651)
+
+2007-11-13  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- fix typo in sbp2 test.
+
+2007-10-24  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- Use the newest ld.so, not the first one we find (#336161, patch
+	  from notting)
+	- Fix firmware installation to get the paths right.
+
+2007-09-27  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- change version to 6.0.19
+
+	* mkinitrd.spec:
+	- update changelog
+
+2007-09-27  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- Actually put the computed library path in the list
+	- Put nosegneg libs in /lib instead of /lib/i686/nosegneg/
+
+2007-09-25  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- change version to 6.0.18
+
+	* mkinitrd.spec:
+	- update changelog
+
+2007-09-25  Peter Jones  <pjones@redhat.com>
+
+	* nash/block.c (nashBdevIterNext):
+	- check if block_process_one_uevent() actually gave us a node
+	to work with (#304731, patch from Harald Hoyer)
+
+2007-09-19  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- change version to 6.0.17
+
+	* mkinitrd.spec:
+	- update changelog
+
+2007-09-19  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- fix handling of --omit-lvm-modules and --omit-dmraid
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* nash/nash.c (switchrootCommand):
+	- support spaces in kernel command line (#240785, based on patch
+	from bhenson).
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- fw-sbp2 uses "firewire" as the bus name, not "fw" (#231708).
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* nash/nash.c (losetupCommand):
+	- open the file with open64 so large files work. (#220687)
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- fix missing quotes causing failure to identify missing modules,
+	as reported in bz#249163
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- change version to 6.0.16
+
+	* mkinitrd.spec:
+	- update changelog
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* nash/nash.c (switchrootCommand):
+	- add options "--no-rm" and "--no-umount" for debugging.
+
+	* nash/nash.c (mkblkdevsCommand):
+	- explicitly set a timeout for our iterator.
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* nash/hotplug.c (handle_events):
+	- set the timeout correctly.
+
+2007-09-11  Peter Jones  <pjones@redhat.com>
+
+	* nash/block.c (block_try_uevent):
+	- handle sysfs_path and dev_path correctly in the cciss case.
+
+	* nash/block.c (nashBdevIterNext):
+	- set the poll timeout before each uevent 
+
+2007-09-07  Peter Jones  <pjones@redhat.com>
+
+	* nash/util.h (mkdirchain):
+	- make this function actually work, so cciss and such boot.
+
+2007-09-07  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- change version to 6.0.15
+
+	* mkinitrd.spec:
+	- update changelog
+
+2007-09-07  Peter Jones  <pjones@redhat.com>
+
+	* nash/nash.c (traceback):
+	- sleep forever on SIGSEGV.
+
+2007-09-07  Peter Jones  <pjones@redhat.com>
+
+	* nash/block.c (block_try_uevent):
+	- don't return 0 on remove events, keep it as -1 .
+
+	* nash/devtree.c (nash_dev_tree_process_bdev):
+	- only check sysfs paths for loop and ram on ADD events, since they're
+	all we care about at all.
+
+2007-09-07  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- fix typo in firewire module change.
+
+2007-09-04  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- handle the new firewire module's sysfs paths, too.
+
+2007-09-04  Jeremy Katz  <katzj@redhat.com>
+
+	* mkinitrd:
+	- handle another firewire module name.
+
+2007-09-04  Peter Jones  <pjones@redhat.com>
+
+	* nash/nash.8:
+	- Fix typo (patch from Eduardo Habkost)
+
+2007-08-31  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- bump version to 6.0.14
+
+	* mkinitrd.spec.in:
+	- add changelog
+
+2007-08-31  Peter Jones  <pjones@redhat.com>
+
+	* mkinitrd:
+	- fix label emission for "mkrootdev" line when not using LVM.
+
+2007-08-31  Peter Jones  <pjones@redhat.com>
+
+	* nash/block.c (nashParseSysfsDevno):
+	- use a local buffer instead of allocating
+	- return ENOENT rather than ENOTDIR since we're really testing
+	$path/dev rather than $path/, and that's what the caller is expecting.
+
+2007-08-31  Peter Jones  <pjones@redhat.com>
+
+	* nash/util.h (strlimitcmp):
+	- add this macro, which is strncmp() but automatially limited at
+	strlen of the left argument.
+
+	* nash/util.h (readFDbuf):
+	- add this function, which is like readFD but reads at most size
+	characters into pre-existing buf.
+
+	* nash/util.h (mkdirchain):
+	- add this function, which is basically mkdir -p .
+
+	* nash/util.h (smartmknod):
+	- make this use a mkdirchain to make the directory
+	- only mknod if it's not already there
+	- don't mknod if we couldn't mkdir and the dir isn't there
+
+2007-08-31  Peter Jones  <pjones@redhat.com>
+
+	* nash/devtree.c (nash_dev_tree_add_sysfs_dir):
+	- split this in two sochecking for the first run is cleaner.
+	- check for /sys/block/loop*, and ignore it
+	- don't lstat to see if it's a dir, look for $path/dev first
+	- use memory on the stack for paths instead of allocating
+
+2007-08-31  Peter Jones  <pjones@redhat.com>
+
+	* nash/wrap.c (nash_wrap_open):
+	- use O_CLOEXEC if it's available, for fewer fcntl calls.
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/nash.c:
+	- do slightly more sophisticated handling of tracebacks to support
+	nassert().
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/uevent.c:
+	- don't include assert.h
+
+	* nash/uevent.c (nashGetUEventPoll):
+	- don't alloc the new array; use a c99 var array instead
+	- handle the timeout better, and be sure and save the result
+	for the caller.
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/util.h (speccpy():
+	- new function to copy a timespec from one variable to another,
+	with bounds checking.
+
+	* nash/util.h (smartmknod):
+	- don't do the assert/mkdir call pair when "" is the path.
+	- only mknod if the file isn't already there.
+	- add an nassert() call.
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/hotplug.c:
+	- don't include assert.h
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/block.c (nashParseSysfsDevno, nashFindFsByName):
+	- add some nassert() calls.
+
+	* nash/devtree.c (try_sysfs_dir, nash_dev_tree_add_sysfs_dir):
+	- add some nassert() calls.
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/util.h:
+	- add nassert() macro because the system assert() macro resets your
+	sigaction to SIG_DFL after it raises the signal, making it mostly
+	useless.
+	- add some calls to nassert()
+
+	* nash/wrap.c:
+	- add wrappers for access and mkdir
+	- sprinkle nassert() calls around liberally.
+
+	* Makefile.inc:
+	- Add linker handling for new wrappers.
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/Makefile:
+	- add explicit link to libgcc_s so it doesn't get dlopen()ed during
+	backtrace()
+	- add nash_LIBS to libnash's link line
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/util.h (specinf, speczero):
+	- make these handle NULL internally to simplify the calling code.
+
+2007-08-30  Peter Jones  <pjones@redhat.com>
+
+	* nash/devtree.c (try_sysfs_dir):
+	- don't create device nodes when "dev" wasn't found.
+
+2007-08-28  Peter Jones  <pjones@redhat.com>
+
+	* nash/devtree.c (nash_dev_tree_add_sysfs_dir):
+	- Fix this to actually process subdirectories correctly.
+
+2007-08-28  Peter Jones  <pjones@redhat.com>
+
+	* grubby/grubby.c:
+	- Add traceback() and install it as the signal handler for SIGSEGV.
+
+2007-08-28  Peter Jones  <pjones@redhat.com>
+
+	* nash/util.h (gettimespecofday):
+	- nanoseconds is microseconds times NSECS_PER_USEC.  Division is not
+	multiplication.  Use '*' not '/'.
+
+2007-08-28  Peter Jones  <pjones@redhat.com>
+
+	* bdevid/scsi.c:
+	- fix segfault when we get back vpd page 83 data but the unique ID
+	is empty. (Reported by Yanko Kaneti, "yaneti" on #fedora-devel)
+
+2007-08-28  Peter Jones  <pjones@redhat.com>
+
+	* ChangeLog:
+	- Add new file!

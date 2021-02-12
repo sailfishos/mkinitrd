@@ -1,0 +1,253 @@
+#!/bin/sh
+
+RUNLEVEL=3
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+ln -s /bin/busybox /bin/umount
+export PATH
+export init=/sbin/init
+
+echo Mounting proc filesystem
+mount -t proc /proc /proc
+
+echo Mounting sysfs filesystem
+mount -t sysfs /sys /sys
+
+echo Creating /tmp
+mount -t tmpfs /tmp /tmp
+
+echo Creating /dev
+mount -o mode=0755 -t tmpfs /dev /dev
+mkdir /dev/pts
+mount -t devpts -o gid=5,mode=620 /dev/pts /dev/pts
+mkdir /dev/shm
+mkdir /dev/mapper
+
+mknod /dev/null c 1 3
+mknod /dev/zero c 1 5
+mknod /dev/systty c 4 0
+mknod /dev/tty c 5 0
+mknod /dev/console c 5 1
+mknod /dev/ptmx c 5 2
+mknod /dev/fb c 29 0
+mknod /dev/tty0 c 4 0
+mknod /dev/tty1 c 4 1
+mknod /dev/tty2 c 4 2
+mknod /dev/tty3 c 4 3
+mknod /dev/tty4 c 4 4
+mknod /dev/tty5 c 4 5
+mknod /dev/tty6 c 4 6
+mknod /dev/tty7 c 4 7
+mknod /dev/tty8 c 4 8
+mknod /dev/tty9 c 4 9
+mknod /dev/tty10 c 4 10
+mknod /dev/tty11 c 4 11
+mknod /dev/tty12 c 4 12
+mknod /dev/ttyS0 c 4 64
+mknod /dev/ttyS1 c 4 65
+mknod /dev/ttyS2 c 4 66
+mknod /dev/ttyS3 c 4 67
+/lib/udev/console_init tty0
+
+echo Setting up hotplug.
+hotplug
+echo Creating block device nodes.
+mkblkdevs
+echo Creating character device nodes.
+mkchardevs
+echo Making device-mapper control node
+mkdmnod
+mkblkdevs
+
+echo Creating initial device nodes
+mdev -s
+
+mknod /dev/sda b 8 0
+mknod /dev/sda1 b 8 1
+mknod /dev/sdb b 8 16
+mknod /dev/sdb1 b 8 17
+mknod /dev/sdc b 8 32
+mknod /dev/sdc1 b 8 33
+mknod /dev/sdd b 8 48
+mknod /dev/sdd1 b 8 49
+
+export rootmnt=/root
+
+for x in $(cat /proc/cmdline); do
+	case $x in
+	init=*)
+		init=${x#init=}
+		;;
+	root=*)
+		ROOT=${x#root=}
+		case $ROOT in
+		LABEL=*)
+			ROOT="/dev/disk/by-label/${ROOT#LABEL=}"
+			;;
+		UUID=*)
+			ROOT="/dev/disk/by-uuid/${ROOT#UUID=}"
+			;;
+		/dev/nfs)
+			BOOT=nfs
+			;;
+		esac
+		;;
+	rootflags=*)
+		ROOTFLAGS="-o ${x#rootflags=}"
+		;;
+	rootfstype=*)
+		ROOTFSTYPE="${x#rootfstype=}"
+		;;
+	rootdelay=*)
+		ROOTDELAY="${x#rootdelay=}"
+		;;
+	loop=*)
+		LOOP="${x#loop=}"
+		;;
+	loopflags=*)
+		LOOPFLAGS="-o ${x#loopflags=}"
+		;;
+	loopfstype=*)
+		LOOPFSTYPE="${x#loopfstype=}"
+		;;
+	cryptopts=*)
+		cryptopts="${x#cryptopts=}"
+		;;
+	nfsroot=*)
+		NFSROOT="${x#nfsroot=}"
+		;;
+	netboot=*)
+		NETBOOT="${x#netboot=}"
+		;;
+	ip=*)
+		IPOPTS="${x#ip=}"
+		;;
+	boot=*)
+		BOOT=${x#boot=}
+		;;
+	resume=*)
+		RESUME="${x#resume=}"
+		;;
+	noresume)
+		NORESUME=y
+		;;
+	panic=*)
+		panic="${x#panic=}"
+		;;
+	quiet)
+		quiet=y
+		;;
+	ro)
+		readonly=y
+		;;
+	rw)
+		readonly=n
+		;;
+	debug)
+		debug=y
+		exec >/tmp/initramfs.debug 2>&1
+		set -x
+		;;
+	debug=*)
+		debug=y
+		set -x
+		;;
+	break=*)
+		break=${x#break=}
+		;;
+	break)
+		break=premount
+		;;
+	esac
+done
+
+
+echo "Searching for RootFileSystem..."
+# Find the boot disk
+dcount=0
+while [ $dcount -le 6 ]
+do
+ 	echo "Searching SD devices..."
+	for device in 'mmcblk0' 'mmcblk1' 'mmcblk2' 'mmcblk3'
+	do
+		echo "checking device /dev/${device}"
+		if [ -e /sys/block/${device}/removable ]
+       		then
+			echo "found harddisk at /dev/${device}"
+			found="yes"
+			devtype="mmc"
+                               while [ ! -e /dev/${device} ]
+                               do
+                                 sleep 5
+                                 echo "."
+                               done
+			break
+		fi
+	done
+	if [ "${found}" = "yes" ]
+	then
+		break
+	else
+	echo "Searching USB devices..."
+	for device in 'sda' 'sdb' 'sdc' 'sdd' 'sde' 'sdf'
+	do
+		echo "checking device /dev/${device}"
+		if [ -e /sys/block/${device}/removable ]
+		then
+			echo "found harddisk at /dev/${device}"
+			found="yes"
+			devtype="usb"
+                               while [ ! -e /dev/${device} ]
+                               do
+                                 sleep 5
+                                 echo "."
+                               done
+			break
+		fi
+	done
+	fi
+	if [ "${found}" = "yes" ]
+	then
+		break
+	else
+		/bin/sleep 5
+	fi
+	let dcount=dcount+1
+done
+if [ "${found}" = "yes" ]
+then
+	echo "Boot disk found on ${device}"
+else
+	echo "No boot device found -- dropping to shell"
+	/bin/sh
+fi
+# try to resume first
+#echo "Attempting to resume from hibernation..."
+#/bin/resume /dev/${device}3
+# if the resume succeeded then we won't get to here, so if we have got here
+# then resume did NOT succeed, which is okay.
+echo "Will mount root from /dev/${device}"
+   
+# We are NOT using squashfs
+echo "mounting root partition, NOT using squashfs" 
+if [ "${devtype}" = 'usb' ]
+then  
+	mount -t ext3 -o rw,noatime,nodiratime /dev/${device}1 ${rootmnt}
+	if [ ! -e "${rootmnt}/bin" ]
+	then
+		echo "Did not find ${rootmnt}/bin"
+		echo "Dropping to shell..."
+		/bin/sh
+	fi
+else
+	mount -t ext3 -o rw,noatime,nodiratime /dev/${device}p1 ${rootmnt}
+	if [ ! -e "${rootmnt}/bin" ]
+	then
+		echo "Did not find ${rootmnt}/bin"
+		echo "Dropping to shell..."
+		/bin/sh
+	fi
+fi 
+
+    
+
+exec switch_root ${rootmnt} ${init} $@

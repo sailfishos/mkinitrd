@@ -1,0 +1,111 @@
+.TH MKINITRD 8 "Tue Aug 10 2004"
+.SH NAME
+mkinitrd \- creates initial ramdisk images for preloading modules
+.SH SYNOPSIS
+\fBmkinitrd\fR [--version] [-v] [-f] 
+         [--preload=\fImodule\fR] [--omit-scsi-modules] 
+         [--omit-raid-modules] [--omit-lvm-modules] 
+         [--with=\fImodule\fR] [--image-version]
+         [--fstab=\fIfstab\fR] [--nocompress]
+         [--builtin=\fImodule\fR] \fIimage\fR \fIkernel-version\fR
+
+.SH DESCRIPTION
+\fBmkinitrd\fR creates an initial image used by the kernel for
+preloading the block device modules (such as IDE, SCSI or RAID)
+which are needed to access the root filesystem. \fBmkinitrd\fR
+automatically loads filesystem modules (such as ext3 and jbd), IDE modules, all
+\fIscsi_hostadapter\fR entries in \fI/etc/modprobe.conf\fR, and raid
+modules if the system's root partition is on raid, which makes it simple
+to build and use kernels using modular device drivers.
+
+Any module options specified in \fI/etc/modprobe.conf\fR are passed
+to the modules as they are loaded by the initial ramdisk.
+
+The root filesystem used by the kernel is specified in the boot configuration
+file, as always. The traditional \fBroot=/dev/hda1\fR style device 
+specification is allowed. If a label is used, as in \fBroot=LABEL=rootPart\fR
+the initrd will search all available devices for an ext2 or ext3 filesystem
+with the appropriate label, and mount that device as the root filesystem.
+
+.SH OPTIONS
+.TP
+\fB-\-builtin=\fR\fImodule\fR
+Act as if \fImodule\fR is built into the kernel being used. \fBmkinitrd\fR
+will not look for this module, and will not emit an error if it does not
+exist. This option may be used multiple times.
+
+.TP
+\fB-f\fR
+Allows \fBmkinitrd\fR to overwrite an existing image file.
+
+.TP
+\fB-\-fstab=\fR\fIfstab\fR
+Use \fIfstab\fR to automatically determine what type of filesystem the
+root device is on. Normally, \fB/etc/fstab\fR is used.
+
+.TP
+\fB-\-image-version
+The kernel version number is appended to the initrd image path before the image
+is created.
+
+.TP
+\fB-\-nocompress
+Normally the created initrd image is compressed with \fBgzip\fR. If this
+option is specified, the compression is skipped.
+
+.TP
+\fB-\-omit-lvm-modules 
+Do not load any lvm modules, even if /etc/fstab expects them.
+
+.TP
+\fB-\-omit-raid-modules 
+Do not load any raid modules, even if /etc/fstab and /etc/raidtab expect them.
+
+.TP
+\fB-\-omit-scsi-modules 
+Do not load any scsi modules, including 'scsi_mod' and 'sd_mod'
+modules, even if they are present.
+
+.TP
+\fB-\-preload=\fR\fImodule\fR
+Load the module \fImodule\fR in the initial ramdisk image. The module gets
+loaded before any SCSI modules which are specified in \fI/etc/modprobe.conf\fR.
+This option may be used as many times as necessary.
+
+.TP
+\fB-v\fR
+Prints out verbose information while creating the image (normally
+the \fBmkinitrd\fR runs silently). 
+
+.TP
+\fB-\-version\fR
+Prints the version of \fBmkinitrd\fR that's being used and then exits.
+
+.TP
+\fB-\-with=\fR\fImodule\fR
+Load the modules \fImodule\fR in the initial ramdisk image. The module
+gets loaded after any SCSI modules which are specified in 
+\fI/etc/modprobe.conf\fR. This option may be used as many times as 
+necessary.
+
+.SH FILES
+.PD 0
+.TP 20
+\fI/dev/loop*\fR
+A block loopback device is used to create the image, which makes this
+script useless on systems without block loopback support available
+\fI(only used on kernels < 2.6)\fR
+
+.TP 20
+\fI/etc/modprobe.conf\fR
+Specifies SCSI modules to be loaded and module options to be used.
+
+.TP 20
+\fI/etc/modules.conf\fR
+Specifies SCSI modules to be loaded and module options to be used.
+\fI(only used on kernels < 2.6)\fR
+
+.PD
+.SH "SEE ALSO"
+.BR fstab (5),
+.BR insmod (1)
