@@ -126,7 +126,11 @@ ln -s bash bin/sh
 [ -x /usr/bin/tree ] && cp /usr/bin/tree bin
 [ -x /usr/bin/less ] && cp /usr/bin/less bin
 cp /bin/env bin
-cp /bin/grep bin
+for i in "/bin/grep" "/usr/bin/grep"; do
+    if [ -e $i ]; then
+        cp $i bin
+    fi
+done
 cp /bin/dmesg bin
 cp /bin/sed bin
 cp /sbin/lsmod sbin
