@@ -114,8 +114,7 @@ cp /sbin/udevadm sbin
 cp /sbin/udevd sbin
 cp /sbin/insmod sbin
 cp /sbin/modprobe sbin
-cp /sbin/pidof sbin
-cp /sbin/killall5 sbin
+cp /usr/bin/killall sbin
 cp /usr/sbin/chroot sbin
 
 cp /sbin/blkid sbin
@@ -646,7 +645,7 @@ fi
 if [ -x /sysroot$init ] ; then
 
     # Leave initramfs and transition to rootfs
-    kill `pidof udevd`
+    killall udevd
     if [ "$quiet" != "1" ] ; then
         echo "transfering control to $init"
     fi
