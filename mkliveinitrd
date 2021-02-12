@@ -147,10 +147,6 @@ fi
 # Copy /etc/fstab over
 cp /etc/fstab etc
 
-# Copy modprobe.conf and friends over
-if [ -e /etc/modprobe.conf ] ; then
-    cp /etc/modprobe.conf etc
-fi
 cp -R /etc/modprobe.d etc
 
 # Copy binaries over
@@ -307,7 +303,7 @@ for o in `cat /proc/cmdline` ; do
         ;;
     blacklist=*)
         blacklist=${o#blacklist=}
-        echo "blacklist $blacklist" >> /etc/modprobe.conf
+        echo "blacklist $blacklist" >> /etc/modprobe.d/blacklist.conf
         ;;
     *)
         m=$(echo $o |cut -s -d . -f 1)
@@ -320,10 +316,12 @@ for o in `cat /proc/cmdline` ; do
         if [ -z "$p" -o -z "$v" ]; then
           continue
         fi
-        echo "options $m $p=$v" >> /etc/modprobe.conf
+        echo "options $m $p=$v" >> /etc/modprobe.d/$m.conf
         ;;
     esac
 done
+
+pushd /etc; ln -sf ../proc/self/mounts mtab; popd
 
 if [ "$quiet" != "1" ] ; then
     echo "kernel commandline: `cat /proc/cmdline`"
@@ -680,9 +678,6 @@ do_live_from_base_loop() {
     if [ "$live_locale" != "" ] ; then
         echo "LANG=$live_locale" > /sysroot/etc/sysconfig/i18n
     fi
-
-    # copy over module options
-    [ -f /etc/modprobe.conf ] && cat /etc/modprobe.conf >> /sysroot/etc/modprobe.conf
 
     # create rule so udev creates /dev/live symlink on real rootfs
     if [ -n "$CDLABEL" ]; then
