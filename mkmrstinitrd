@@ -377,6 +377,8 @@ if [ "$autodetect" = "1" ]; then
             thingtomount=/dev/root
             ;;
         /dev/*)
+            ln -s $root /dev/root
+            thingtomount=$root
             ;;
         *)
             thingtomount=$root
@@ -407,15 +409,18 @@ else
         echo "checking device /dev/${device}"
         if [ -e /sys/block/${device}/removable ]
         then
-            echo "found harddisk at /dev/${device}"
-            found="yes"
-            devtype="mmc"
-            while [ ! -e /dev/${device} ]
-            do
-                sleep 5
-                echo "."
-            done
-            break
+	    if [ -e /dev/${device}p1 ]
+	    then
+	            echo "found harddisk at /dev/${device}"
+        	    found="yes"
+	            devtype="mmc"
+        	    while [ ! -e /dev/${device} ]
+	            do
+        	        sleep 5
+                	echo "."
+	            done
+        	    break
+	    fi
         fi
     done
 
