@@ -56,7 +56,7 @@ export MALLOC_PERTURB_=204
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:$PATH
 export PATH
 
-. /etc/rc.d/init.d/functions
+[ ! -f /etc/rc.d/init.d/functions ] || . /etc/rc.d/init.d/functions
 
 # Set the umask. For iscsi, the initrd can contain plaintext
 # password (chap secret), so only allow read by owner.
