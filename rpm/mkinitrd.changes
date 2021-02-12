@@ -1,0 +1,134 @@
+* Mon Jul 23 2012 Marko Saukko <marko.saukko@jollamobile.com> - 7.0.17
+- Added 0001-Fix-for-systemd-187.patch
+- Dropped 0001-udevd-was-moved-to-lib-udev-from-sbin-in-udev-174.patch
+
+* Thu Jul 19 2012 Marko Saukko <marko.saukko@jollamobile.com> - 7.0.17
+- Drop insmod.static dependency.
+
+* Thu Mar 15 2012 Marko Saukko <marko.saukko@gmail.com> - 7.0.17
+- Added patch to fix the udevd location change in udev 174.
+
+* Mon Oct 03 2011 Marko Saukko <marko.saukko@cybercom.com> - 7.0.17
+- Added awk dependency as running /usr/libexec/mkliveinitrd requires it.
+
+* Fri Jul 22 2011 Yi Yang <yi.y.yang@intel.com> - 7.0.17
+- Mount /run as tmpfs and mkdir /run/udev/rules.d (BMC#20806)
+
+* Wed Jul 06 2011 Anas Nashif <anas.nashif@intel.com> - 7.0.17
+- Do not put modprobe.conf in initrd, this is obsolete
+- link /etc/mtab to /proc/self/mounts to make netbooks work again
+
+* Wed Jun 22 2011 Chris Ferron <chris.e.ferron@linux.intel.com> - 7.0.17
+- removed util-linux-ng as it has been replaced by util-linux.
+
+* Wed May 11 2011 Chris Ferron <chris.e.ferron@linux.intel.com> - 7.0.17
+- removed need for pidof and killall5
+
+* Tue May 03 2011 Chris Ferron <chris.e.ferron@linux.intel.com> - 7.0.17
+- As part of work to implement "FEA#16109 - [FEA] Implement SystemD 
+  as MeeGo init provide" the patch mkinitrd-lsb-functions-optional.patch 
+  was removed as it is no longer used.
+
+* Mon Aug 16 2010 Chris E Ferron <chris.e.ferron@intel.com> - 7.0.17
+- Fixed BMC#4282 so MFLD will boot by applying a patch from UMG.
+
+* Sat Jun 12 2010 Arjan van de Ven <arjan@linux.intel.com> - 7.0.17
+- reduce udev settle time in mkmrstinitrd
+
+* Fri May 28 2010 Yi Yang <yi.y.yang@intel.com> - 7.0.17
+- fix an weird btrfs root issue
+
+* Mon Apr 12 2010 Anas Nashif <anas.nashif@intel.com> - 7.0.17
+- dmsetup back in /sbin/, was an rpm bug
+
+* Sun Mar 07 2010 Anas Nashif <anas.nashif@intel.com> - 7.0.16
+- dmsetup is now in /usr/sbin
+
+* Mon Feb 08 2010 Anas Nashif <anas.nashif@intel.com> - 7.0.15
+- Fixed warnings during image creation
+
+* Tue Jan 12 2010 Peter Zhu <peter.j.zhu@intel.com> - 7.0.13
+- Fix the annoying startup warning by new udev
+
+* Mon Nov 23 2009 Yi Yang <yi.y.yang@intel.com> - 7.0.13
+- Split grubby as a seperate package
+
+* Mon Oct 05 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.13
+- Fixed and sanitized Requires
+
+* Thu Oct 01 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.13
+- replace vol_id with blkid
+
+* Thu Oct 01 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.12
+- Update to 7.0.12
+
+* Thu Oct 01 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.11
+- Update to 7.0.11: sync with git tree
+
+* Thu Oct 01 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.6
+- remove annoying message about persistent overlay
+
+* Tue Sep 29 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.5
+- Fixed parsing of name and version from moblin-release
+- 7.0.5
+
+* Sat Sep 26 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.4
+- Integrate patches
+- Only substitute  first line release when updating kernel
+
+* Thu Jul 9 2009 Austin Zhang <austin.zhang@intel.com> - 7.0.3
+- Replace vol_id with blkid, vol_id was gone with the udev update.
+
+* Wed Jun 17 2009 Prajwal Mohan <prajwal.karur.mohan@intel.com> - 7.0.3
+- Modified mkmrstinitrd to fix USB search problem
+
+* Thu May 14 2009 Prajwal Mohan <prajwal.karur.mohan@intel.com> - 7.0.2 
+- Added support to boot from Nand for Mrst
+
+* Wed Apr 08 2009 Anas Nashif <anas.nashif@intel.com> - 7.0.1
+- Create semi-live initrds for moorestown
+- New released, now from our git tree
+
+* Tue Apr 07 2009 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Remove confusing message about mkinitrd
+
+* Wed Apr 01 2009 Andrzej Zaborowski <andrew.zaborowski@intel.com> - 6.0.52
+- Fix init= handling
+
+* Wed Mar 18 2009 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Do not exit with 1
+
+* Mon Mar 16 2009 Yan Li <yan.i.li@intel.com> - 6.0.52
+- Display a proper error message when not invoked to make a LiveCD
+  initrd
+
+* Wed Feb 04 2009 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Pass kernel paramters to init
+
+* Wed Feb 04 2009 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Pass kernel paramters to init
+
+* Fri Jan 16 2009 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Create lib/udev/rules.d later avoiding warning
+
+* Sat Jan 10 2009 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Handle new udev calls
+- Support hybrid iso
+
+* Tue Dec 16 2008 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Fixed rpmlint errors in Summary tag
+
+* Thu Dec 11 2008 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- fastinit replaces initscripts
+
+* Tue Dec 02 2008 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Exit if not generating a LiveOS initrd
+
+* Sun Nov 30 2008 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- Do not use nash, fixed dependencies
+
+* Fri Nov 28 2008 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- fixed rpmlint warning: explicit-lib-dependency
+
+* Sat Oct 04 2008 Anas Nashif <anas.nashif@intel.com> - 6.0.52
+- remove requirement on isomd5sum
