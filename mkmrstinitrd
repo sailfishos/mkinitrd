@@ -397,7 +397,7 @@ else
     if [ "$quiet" != "1" ] ; then
         echo "waiting for system to settle"
     fi
-    /sbin/udevadm settle --timeout=30 || :
+    /sbin/udevadm settle --timeout=5 || :
 
     echo "Searching for Root File System..."
     # Find the boot disk
@@ -502,7 +502,7 @@ if [ "$autodetect" = "1" ]; then
     if [ "$quiet" != "1" ] ; then
         echo "waiting for system to settle"
     fi
-    /sbin/udevadm settle --timeout=30 || :
+    /sbin/udevadm settle --timeout=5 || :
 fi
 
 
