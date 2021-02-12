@@ -248,6 +248,11 @@ mount -n -t sysfs sysfs /sys
 
 echo "" > /proc/sys/kernel/hotplug
 
+mkdir -p -m 0755 /run
+mount -t tmpfs -o mode=0755,nodev,noexec,nosuid tmpfs /run >/dev/null 2>&1
+mkdir -m 0755 /run/udev /run/udev/rules.d
+export UDEVRULESD=/run/udev/rules.d
+
 # Declare all variables here.. mostly for housekeeping
 #
 init="/sbin/init"
